@@ -27,11 +27,12 @@ def BreadthFirstLevels(G,root):
                     nextLevel.add(w)
         print levelGraph
         currentLevel = nextLevel
+        return nodes
 def BreadthFirstKLevels(G,root,k):
     visited = set()
     currentLevel = [root]
     level = 0
-    nodes = []
+    nodelist = []
     while (currentLevel and level<=k):
         for v in currentLevel:
             visited.add(v)
@@ -42,11 +43,11 @@ def BreadthFirstKLevels(G,root,k):
                 if w not in visited:
                     levelGraph[v].add(w)
                     nextLevel.add(w)
-        print levelGraph
-        nodes = nodes + levelGraph.keys()
+        # yield levelGraph
+        nodelist = nodelist + levelGraph.keys()
         level = level + 1
         currentLevel = nextLevel
-    return nodes
+    return nodelist
 
 #Tree generator
 def _tree_edges(n,r):

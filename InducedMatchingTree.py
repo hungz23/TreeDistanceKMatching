@@ -1,6 +1,7 @@
 import networkx as nx
 from LexBFS import LexBFS
 from BFS import BreadthFirstKLevels
+from AdjacencySort import sortadjacencylist
 #Tree generator
 def _tree_edges(n,r):
     # helper function for trees
@@ -16,28 +17,36 @@ def _tree_edges(n,r):
                 yield source,target
             except StopIteration:
                 break
-def node_index(map, u):
-    return map.index(u)
 
-def makedictionary(map, L):
-    dict = {}
-    for u in L:
-        dict[u] = node_index(map, u)
-    return dict
+def makedictionary(maplist):
+    dictionary = {}
+    for index, value in enumerate(maplist):
+        dictionary[value] = index
+    return dictionary
 
-def sortlistwithmap(map, L):
-    return makedictionary(map, L)
+
+
+def sortlistwithmap(mapping, L):
+    sortedlist = []
+    for item in sorted(mapping.items(), key=lambda x: (x[1], x[0])):
+        sortedlist.append(item[0])
+    return sortedlist
+
 
 def induced_matching(G):
     sigma = LexBFS(G)
     visited = [False]*n
     M = []
+    sigmamapping = makedictionary(sigma)
+    adjacencylist = sortadjacencylist(sigma, G)
+    print adjacencylist
     for u in sigma:
         if visited[u]:
             continue
-        neighbors = sortlistwithmap(sigma, list(G.neighbors(u)))
+        # neighbors = sortlistwithmap(sigmamapping, list(G.neighbors(u)))
+        neighbors = adjacencylist[u]
         for node in neighbors:
-            if(node_index(sigma, node)<node_index(sigma, u) and not visited[node]):
+            if(sigmamapping[node]<sigmamapping[u] and not visited[node]):
                 v = node
                 M.append((v, u))
                 Nv = G.neighbors(v)
@@ -55,12 +64,15 @@ def distancekmatching(G, k):
     sigma = LexBFS(G)
     visited = [False]*n
     M = []
+    sigmamapping = makedictionary(sigma)
+    adjacencylist = sortadjacencylist(sigma, G)
     for u in sigma:
         if visited[u]:
             continue
-        neighbors = sortlistwithmap(sigma, list(G.neighbors(u)))
+        # neighbors = sortlistwithmap(sigmamapping, list(G.neighbors(u)))
+        neighbors = adjacencylist[u]
         for node in neighbors:
-            if(node_index(sigma, node)<node_index(sigma, u) and not visited[node]):
+            if(sigmamapping[node]<sigmamapping[u] and not visited[node]):
                 v = node
                 M.append((v, u))
                 Nkv = BreadthFirstKLevels(G,v,k-1)
@@ -75,9 +87,11 @@ def distancekmatching(G, k):
                 G.remove_nodes_from(Nku)
     return M
 #generate the tree graph
-n = 100
+n = 200
 G = nx.empty_graph(n)
-G.add_edges_from(_tree_edges(n,4))
-IM = induced_matching(G)
-k = 2
-DkM = distancekmatching(G, k)
+G.add_edges_from(list(_tree_edges(n,4)))
+H = G.copy()
+nx.write_adjlist(G,"test.adjlist")
+IM = induced_matching(H)
+k = 3
+DkM = distancekmatching(H, k)

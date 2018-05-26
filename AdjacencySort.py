@@ -19,4 +19,4 @@ def sortadjacencylist(order, G):
         for adjnode in G.neighbors(node):
             adjacency[adjnode].append(node)
     return adjacency
-G = nx.Graph.karate_club_graph()
+# G = nx.Graph.karate_club_graph()

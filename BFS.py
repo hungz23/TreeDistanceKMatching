@@ -46,6 +46,8 @@ def BreadthFirstKLevels(G,root,k):
         # yield levelGraph
         nodelist = nodelist + levelGraph.keys()
         level = level + 1
+        if level==k:
+            break
         currentLevel = nextLevel
     return nodelist
 

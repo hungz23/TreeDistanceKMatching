@@ -2,6 +2,8 @@ import networkx as nx
 from LexBFS import LexBFS
 from BFS import BreadthFirstKLevels
 from AdjacencySort import sortadjacencylist
+import matplotlib.pyplot as plt
+
 #Tree generator
 def _tree_edges(n,r):
     # helper function for trees
@@ -35,11 +37,11 @@ def sortlistwithmap(mapping, L):
 
 def induced_matching(G):
     sigma = LexBFS(G)
-    visited = [False]*n
+    visited = [False]*len(G.nodes)
     M = []
     sigmamapping = makedictionary(sigma)
     adjacencylist = sortadjacencylist(sigma, G)
-    print adjacencylist
+    # print adjacencylist
     for u in sigma:
         if visited[u]:
             continue
@@ -62,7 +64,7 @@ def induced_matching(G):
     return M
 def distancekmatching(G, k):
     sigma = LexBFS(G)
-    visited = [False]*n
+    visited = [False]*len(G.nodes)
     M = []
     sigmamapping = makedictionary(sigma)
     adjacencylist = sortadjacencylist(sigma, G)
@@ -75,8 +77,8 @@ def distancekmatching(G, k):
             if(sigmamapping[node]<sigmamapping[u] and not visited[node]):
                 v = node
                 M.append((v, u))
-                Nkv = BreadthFirstKLevels(G,v,k-1)
-                Nku = BreadthFirstKLevels(G,u,k-1)
+                Nkv = BreadthFirstKLevels(G,v,k)
+                Nku = BreadthFirstKLevels(G,u,k)
                 for node in Nkv:
                     visited[node] = True
                 for node in Nku:
